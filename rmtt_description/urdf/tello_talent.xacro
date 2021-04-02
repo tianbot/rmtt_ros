@@ -1,5 +1,15 @@
 <?xml version="1.0"?>
-<robot name="tello_talent">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="tello_talent">
+
+    <xacro:property name="prefix" value="$(arg prefix)" />
+
+    <xacro:if value="${prefix == '/' or prefix == '' or prefix == ' '}"> 
+    <xacro:property name="tf_prefix" value="" />
+    </xacro:if>
+
+    <xacro:unless value="${prefix == '/' or prefix == '' or prefix == ' '}"> 
+    <xacro:property name="tf_prefix" value="${prefix}/" />
+    </xacro:unless>
 
     <!-- Materials -->
     <material name="gray">
@@ -14,7 +24,7 @@
     <!-- TODO add Gazebo color information -->
 
     <!-- Base link -->
-    <link name="base_link">
+    <link name="${tf_prefix}base_link">
         <visual>
             <origin xyz="0 0 0.01"/>
             <geometry>
@@ -60,7 +70,7 @@
     </link>
 
     <!-- Camera link -->
-    <link name="camera_link">
+    <link name="${tf_prefix}camera_link">
         <visual>
             <origin xyz="0 0 0"/>
             <geometry>
@@ -81,16 +91,16 @@
 
     <!-- Fixed joint -->
     <joint name="camera_joint" type="fixed">
-        <origin xyz="0.035 0 0" rpy="0 0 0"/>  <!-- TODO fix origin -->
-        <parent link="base_link"/>
-        <child link="camera_link"/>
+        <origin xyz="0.035 0 0" rpy="${-pi*105/180} 0 ${-pi*90/180}"/>  <!-- TODO fix origin -->
+        <parent link="${tf_prefix}base_link"/>
+        <child link="${tf_prefix}camera_link"/>
     </joint>
 
     <!-- IMU Link -->
-    <link name="imu_link"/>
+    <link name="${tf_prefix}imu_link"/>
     <joint name="imu_joint" type="fixed">
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <parent link="base_link"/>
-      <child link="imu_link"/>
+      <parent link="${tf_prefix}base_link"/>
+      <child link="${tf_prefix}imu_link"/>
     </joint>
 </robot>
