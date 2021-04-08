@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*-coding:utf-8-*-
 # Copyright (c) 2020 DJI.
 #
@@ -13,18 +14,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
+import sys
 import robomaster
 from robomaster import robot
 
 
 if __name__ == '__main__':
+    
     tl_drone = robot.Drone()
     tl_drone.initialize()
     version = tl_drone.get_sdk_version()
     print("Drone SDK Version: {0}".format(version))
     # 切换飞行器WiFi模式为组网模式，指定路由器SSID和密码
-    tl_drone.config_sta(ssid="TIANBOT-be8-5G", password="www.tianbot.com")
+    if version==None:
+        print("Please check the connection !")
+    else:
+        n = len(sys.argv)
+        if n==3:
+            ssid=sys.argv[1]
+            password=sys.argv[2]
+        else:
+            ssid="TIANBOT-be8-5G"
+            password="www.tianbot.com"
 
-    tl_drone.close()
+        tl_drone.config_sta(ssid, password)
+        print("Wifi configured to ssid: {0}, please switch TT to router mode".format(ssid))
+        tl_drone.close()
 
+    sys.exit("Use Ctrl + C to exit")
