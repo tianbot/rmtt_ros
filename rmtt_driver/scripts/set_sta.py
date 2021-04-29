@@ -14,13 +14,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
-import robomaster
-from robomaster import robot
+import sys,socket
+from robomaster import robot,config
 
+def get_local_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    s.connect(('<broadcast>', 0))
+    return s.getsockname()[0]
 
 if __name__ == '__main__':
-    
+    config.LOCAL_IP_STR = get_local_ip()
+    print(config.LOCAL_IP_STR)
     tl_drone = robot.Drone()
     tl_drone.initialize()
     version = tl_drone.get_sdk_version()
@@ -41,4 +46,4 @@ if __name__ == '__main__':
         print("Wifi configured to ssid: {0}, please switch TT to router mode".format(ssid))
         tl_drone.close()
 
-    sys.exit("Use Ctrl + C to exit")
+    sys.exit("Press Ctrl + C to exit.")
