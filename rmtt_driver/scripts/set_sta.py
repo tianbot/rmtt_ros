@@ -16,16 +16,11 @@
 
 import sys,socket
 from robomaster import robot,config
-
-def get_local_ip():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    s.connect(('<broadcast>', 0))
-    return s.getsockname()[0]
+from rmtt_core import RoboMasterTelloTalent as rmtt
 
 if __name__ == '__main__':
-    config.LOCAL_IP_STR = get_local_ip()
-    print(config.LOCAL_IP_STR)
+    config.LOCAL_IP_STR = rmtt.get_local_ip(rmtt)
+    print("Computer local ip:",config.LOCAL_IP_STR)
     tl_drone = robot.Drone()
     tl_drone.initialize()
     version = tl_drone.get_sdk_version()
