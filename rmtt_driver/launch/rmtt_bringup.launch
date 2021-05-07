@@ -5,7 +5,7 @@
     <arg name="drone_ip" default="$(optenv RMTT_DRONE_IP 192.168.10.1)" />
     <arg name="local_ip" default="$(optenv RMTT_LOCAL_IP)" />
     <group ns="$(arg ns)">
-        <node pkg="rmtt_ros" name="rmtt_driver" type="rmtt_node.py" output="screen">
+        <node pkg="rmtt_driver" name="rmtt_driver" type="rmtt_node.py" output="screen">
             <param name="drone_ip" type="string" value="$(arg drone_ip)" />
             <param name="drone_port" type="string" value="8889" />
             <param unless="$(eval local_ip=='')" name="local_ip" type="string" value="$(arg local_ip)" />
