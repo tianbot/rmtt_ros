@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<launch>
+  <arg name = "ns" default="$(optenv RMTT_NAMESPACE /)" />
+  <arg name = "tag_id" default="$(optenv RMTT_TAG_ID 586)" />
+  <group ns="$(arg ns)">
+    <node pkg="rmtt_tracker" type="rmtt_tag_tracker.py" name="tag_tracker" output="screen" respawn="true">
+      <param name="tag_id" value="$(arg tag_id)"/>
+    </node>
+  </group>
+</launch> 
