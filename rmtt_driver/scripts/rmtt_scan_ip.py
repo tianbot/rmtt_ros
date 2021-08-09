@@ -14,8 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import logging
-import time
+import logging, time, sys
 import robomaster
 from robomaster import robot
 from multi_robomaster import tool
@@ -34,7 +33,14 @@ if __name__ == '__main__':
     client._conn.local_ip = '0.0.0.0'
     client.start()
 
-    robot_host_list=client.scan_multi_robot(1)
+    n = len(sys.argv)
+    if n == 2:
+        num_drones=int(sys.argv[1])
+    else:
+        num_drones=1
+
+    robot_host_list=client.scan_multi_robot(num_drones)
+
     for host in robot_host_list:
         proto = tool.TelloProtocol("sn?", host)
         client.send(proto)
