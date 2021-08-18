@@ -14,28 +14,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys,socket
-from robomaster import robot,config
+import sys
+
+from robomaster import robot, config
+
 from rmtt_core import RoboMasterTelloTalent as rmtt
 
 if __name__ == '__main__':
-    config.LOCAL_IP_STR = rmtt.get_local_ip(rmtt)
-    print("Computer local ip:",config.LOCAL_IP_STR)
+    config.LOCAL_IP_STR = rmtt.get_local_ip()
+    print("Computer local ip:", config.LOCAL_IP_STR)
     tl_drone = robot.Drone()
     tl_drone.initialize()
     version = tl_drone.get_sdk_version()
     print("Drone SDK Version: {0}".format(version))
     # 切换飞行器WiFi模式为组网模式，指定路由器SSID和密码
-    if version==None:
+    if version == None:
         print("Please check the connection !")
     else:
         n = len(sys.argv)
-        if n==3:
-            ssid=sys.argv[1]
-            password=sys.argv[2]
+        if n == 3:
+            ssid = sys.argv[1]
+            password = sys.argv[2]
         else:
-            ssid="TIANBOT-be8-5G"
-            password="www.tianbot.com"
+            ssid = "TIANBOT-be8-5G"
+            password = "www.tianbot.com"
 
         tl_drone.config_sta(ssid, password)
         print("Wifi configured to ssid: {0}, please switch TT to router mode".format(ssid))
