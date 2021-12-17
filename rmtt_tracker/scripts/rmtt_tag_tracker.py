@@ -43,7 +43,7 @@ if __name__ == '__main__':
     rospy.init_node('tag_tracker')
 
     # params
-    tag_id = rospy.get_param('tag_id', '5')
+    tag_id = rospy.get_param('tag_id', '586')
     tag_name = "tag_" + tag_id
     track_distance = rospy.get_param("track_distance", 0.8)
 
