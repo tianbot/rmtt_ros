@@ -60,10 +60,10 @@ if __name__ == '__main__':
     target_frame = tag_name + "_target"
     static_transformStamped.child_frame_id = target_frame
 
-    static_transformStamped.transform.translation.y -= track_distance*np.tan(np.deg2rad(15))
+    static_transformStamped.transform.translation.y += track_distance*np.tan(np.deg2rad(15))
     static_transformStamped.transform.translation.z += track_distance 
 
-    quat = quaternion_from_euler(0, np.deg2rad(90), np.deg2rad(-90))
+    quat = quaternion_from_euler(np.deg2rad(-90), np.deg2rad(90), 0)
     static_transformStamped.transform.rotation.x = quat[0]
     static_transformStamped.transform.rotation.y = quat[1]
     static_transformStamped.transform.rotation.z = quat[2]
@@ -78,10 +78,10 @@ if __name__ == '__main__':
     rate = rospy.Rate(10.0)
 
     # pid setup
-    pid_x = PID(0.5, 0.1, 0.01)
-    pid_y = PID(0.5, 0.2, 0)
-    pid_z = PID(0.5, 0, 0)
-    pid_a = PID(0.5, 0.1, 0.01)
+    pid_x = PID(0.6, 0, 0)
+    pid_y = PID(0.6, 0, 0)
+    pid_z = PID(0.6, 0, 0)
+    pid_a = PID(0.6, 0, 0)
 
     while not rospy.is_shutdown():
         try:
