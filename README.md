@@ -64,7 +64,6 @@ Published topics:
   Battery percentage.
 
 Subscribed topics:
-
   - ~cmd_vel [geometry_msgs/Twist] 
   Command velocity. Only be effected after taking off.
 
@@ -82,6 +81,13 @@ Subscribed topics:
 
   - ~mled [std_msgs/String] 
   Dot matrix display. Showing charactor or string.
+
+Services:
+  - ~set_downvision [std_srvs/SetBool]
+  Change the front cam to downward cam
+
+  - ~set_hdmap
+  Change the positioning to HD map mode. Can be used with the mission pad or HD map.
 
 ## License
 The ROS driver is prietary. Other packages are under BSD Clause-3 open source license. RoboMaster SDK is under Apache License, version 2.0.
