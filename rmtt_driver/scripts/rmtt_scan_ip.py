@@ -14,13 +14,37 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import logging, time, sys
+import logging, time, sys, getopt
 import robomaster
 from robomaster import robot
 from multi_robomaster import tool
 
 
 if __name__ == '__main__':
+    help_str ='rmtt_scan_ip.py -n <num of drones>' 
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "h:n:", ["help", "num=1"])
+    except getopt.GetoptError:
+        print(help_str)
+        sys.exit(2)
+
+    if not args:
+        num = 1
+        print('Searching for one drone...')
+    elif not opts:
+        print('Please use the following cmd to specify the number of drones: \n',
+        '\033[95m'+help_str+'\033[0m')
+        sys.exit(2)
+
+    for opt, arg in opts:
+        if opt in ("-h", "--help"):
+            print(help_str)
+            sys.exit()
+        elif opt in ("-n", "--num"):
+            num = int(arg)
+        else:
+            print(help_str)
+            sys.exit(2)
     #robomaster.enable_logging_to_file()
     logger_name = "multi_robot"
     logger = logging.getLogger(logger_name)
@@ -33,13 +57,7 @@ if __name__ == '__main__':
     client._conn.local_ip = '0.0.0.0'
     client.start()
 
-    n = len(sys.argv)
-    if n == 2:
-        num_drones=int(sys.argv[1])
-    else:
-        num_drones=1
-
-    robot_host_list=client.scan_multi_robot(num_drones)
+    robot_host_list=client.scan_multi_robot(num)
 
     for host in robot_host_list:
         proto = tool.TelloProtocol("sn?", host)
@@ -59,14 +77,7 @@ if __name__ == '__main__':
         time.sleep(0.1)
         logger.info("get host")
 
-
     client.close()
-    # change the robot_num that you want to scan
-    #multi_drone.initialize(robot_num=4)
-    #drone_ip_list = multi_drone._get_sn(timeout=10)
-    #for host in robot_host_list:
-    #    print("scan result: host:{0} sn{1}".format(robot_host_list,robot_sn_dict))
-
 
     for sn in robot_sn_dict:
         print("scan result: sn:{0} host{1}".format(sn,robot_sn_dict[sn]))
