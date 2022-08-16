@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import rospy
-from std_msgs.msg import Empty
+from std_msgs.msg import Empty, String
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Joy
 
@@ -31,24 +31,29 @@ class RmttJoyTeleop(object):
     def __init__(self):
         print(msg)
         rospy.loginfo("RMTT Joy Teleop Initializing...")
-        self._twist = self._zero_twist = Twist()
+        self._zero_twist = Twist()
+        self._twist = Twist()
         self._deadman_pressed = False
         self._zero_twist_published = False
 
         self._cmd_vel_pub = rospy.Publisher('cmd_vel', Twist, queue_size=5)
         self._takeoff_pub = rospy.Publisher('takeoff', Empty, queue_size=1)
         self._land_pub = rospy.Publisher('land', Empty, queue_size=1)
-        self._flip_pub = rospy.Publisher('flip', Empty, queue_size=1)
+        self._flip_pub = rospy.Publisher('flip', String, queue_size=1)
         self._joy_sub = rospy.Subscriber('joy', Joy, self.joy_callback)
         self._timer = rospy.Timer(rospy.Duration(0.05), self.joystick_controller)
 
-        _joy_mode = rospy.get_param("~joy_mode", "D").lower()        
-        if _joy_mode == "d":
+        self._joy_mode = rospy.get_param("~joy_mode", "D").lower()        
+        if self._joy_mode == "d":
             self._axis_yaw = 0
             self._axis_throttle = 1
             self._axis_roll = 2
             self._axis_pitch = 3
             self._axis_takeoff_land = 5
+            self._btn_flip_forward = 3
+            self._btn_flip_backward = 1
+            self._btn_flip_left = 0
+            self._btn_flip_right = 2
         
         self._linear_scale = rospy.get_param("~linear_scale", 0.5)
         self._angular_scale = rospy.get_param("~angular_scale", 1)
@@ -56,6 +61,34 @@ class RmttJoyTeleop(object):
         rospy.loginfo("RMTT Joy Teleop Initializing...Done")
 
     def joy_callback(self, joy):
+        if len(joy.axes) == 6:
+            if not self._joy_mode == "d":
+                self._joy_mode = "d"
+                rospy.loginfo("Joypad is set to mode 'd'")
+                self._axis_yaw = 0
+                self._axis_throttle = 1
+                self._axis_roll = 2
+                self._axis_pitch = 3
+                self._axis_takeoff_land = 5
+                self._btn_flip_forward = 3
+                self._btn_flip_backward = 1
+                self._btn_flip_left = 0
+                self._btn_flip_right = 2
+
+        if len(joy.axes) == 8:
+            if not self._joy_mode == "x":
+                self._joy_mode = "x"
+                rospy.loginfo("Joypad is set to mode 'x'")
+                self._axis_yaw = 0
+                self._axis_throttle = 1
+                self._axis_roll = 3
+                self._axis_pitch = 4
+                self._axis_takeoff_land = 7
+                self._btn_flip_forward = 3
+                self._btn_flip_backward = 0
+                self._btn_flip_left = 2
+                self._btn_flip_right = 1
+
         self._twist.linear.x = 0
         self._twist.linear.y = 0
         self._twist.linear.z = 0
@@ -73,8 +106,17 @@ class RmttJoyTeleop(object):
         elif joy.axes[self._axis_takeoff_land] == -1:
             self._land_pub.publish(Empty())
 
-        if joy.buttons[3]:
-            self._flip_pub.publish(Empty())
+        self._flip_direction = String()
+        if joy.buttons[self._btn_flip_forward]:
+            self._flip_direction.data = 'f'
+        elif joy.buttons[self._btn_flip_backward]:
+            self._flip_direction.data = 'b'
+        elif joy.buttons[self._btn_flip_left]:
+            self._flip_direction.data = 'l'
+        elif joy.buttons[self._btn_flip_right]:
+            self._flip_direction.data = 'r'
+        if self._flip_direction.data != '':
+            self._flip_pub.publish(self._flip_direction)
 
     def joystick_controller(self, *args):
         if self._deadman_pressed:
