@@ -14,15 +14,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import sys
 
 from robomaster import robot, config
-
 from rmtt_core import RoboMasterTelloTalent as rmtt
 
 if __name__ == '__main__':
     config.LOCAL_IP_STR = rmtt.get_local_ip()
     print("Computer local ip:", config.LOCAL_IP_STR)
+
+
     tl_drone = robot.Drone()
     tl_drone.initialize()
     version = tl_drone.get_sdk_version()
@@ -39,8 +41,12 @@ if __name__ == '__main__':
             ssid = "TIANBOT-be8-5G"
             password = "www.tianbot.com"
 
-        tl_drone.config_sta(ssid, password)
-        print("Wifi configured to ssid: {0}, please switch TT to router mode".format(ssid))
+        is_configured = tl_drone.config_sta(ssid, password)
+        if is_configured:
+            print("Wifi configured to ssid: {0}, please switch TT to router mode".format(ssid))
+        else:
+            print("Failed to configure RMTT sta. Please check logger.")
+        
         tl_drone.close()
 
-    sys.exit("Press Ctrl + C to exit.")
+    os._exit(0)
