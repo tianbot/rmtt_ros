@@ -1,0 +1,30 @@
+<launch>
+
+  <arg name="server" default="localhost"/>
+  <arg name="robot_name_list" default="[rmtt, tbmn, rmtt, tbmn]"/>
+
+  <node pkg="rmtt_vrpn_client" type="vrpn_client_node" name="rmtt_vrpn_client" output="screen">
+    <rosparam subst_value="true">
+      server: $(arg server)
+      port: 3883
+
+      update_frequency: 100.0
+      frame_id: world
+
+      # Use the VRPN server's time, or the client's ROS time.
+      use_server_time: false
+      broadcast_tf: true
+      process_sensor_id_: true
+      
+      # robot name and corresponding ID:
+      robot_name_list: $(arg robot_name_list)
+
+      # Must either specify refresh frequency > 0.0, or a list of trackers to create
+      refresh_tracker_frequency: 5.0
+    </rosparam>
+  </node>
+
+<!--rviz-->
+<node pkg="rviz" type="rviz" name="rviz" args="-d $(find vrpn_client_ros)/vrpn.rviz"/>
+
+</launch>

@@ -1,0 +1,9 @@
+<launch>
+
+<!-- ORB_SLAM3 Mono -->
+<node pkg="rmtt_orb3" type="Mono" name="rmtt_orb3" output="screen" cwd="node" args="$(find rmtt_orb3)/Vocabulary/ORBvoc.txt $(find rmtt_orb3)/SettingsFile/Monocular/rmtt_mono.yaml"/> 
+
+<!--rviz-->
+<node pkg="rviz" type="rviz" name="rviz" args="-d $(find rmtt_orb3)/rmtt_mapping.rviz"/>
+
+</launch>

@@ -1,0 +1,35 @@
+<launch>
+
+<!-- midas depth estimate -->
+<node pkg="rmtt_midas" type="rmtt_midas" name="rmtt_midas" output="screen" cwd="node" respawn="true">
+    <param name="image_topic" value="/image_raw"/>
+    <param name="depth_topic" value="/midas/depth"/>
+    <param name="model_name" value="model-small-traced.pt"/>
+    <param name="out_orig_size" value="true"/>
+    <param name="net_width" value="256"/>
+    <param name="net_height" value="256"/>
+    <param name="logging" value="false"/>
+    <param name="cloud_topic" value="/midas/pointcloud"/>
+    <param name="frame_id" value="rmtt_0"/>
+    <param name="kdevice" value="kCUDA" />  <!--or kCPU-->
+</node>
+
+<!--octomap-->
+<node pkg="octomap_server" type="octomap_server_node" name="octomap_server">
+    <param name="resolution" value="0.02" />
+    
+    <!-- fixed map frame (set to 'map' if SLAM or localization running!) -->
+    <param name="frame_id" type="string" value="world" />
+    
+    <!-- maximum range to integrate (speedup!) -->
+    <param name="sensor_model/max_range" value="5.0" />
+
+    <!-- data source to integrate (PointCloud2) -->
+    <remap from="cloud_in" to="/midas/pointcloud" />
+
+</node>
+
+<!--rviz-->
+<node pkg="rviz" type="rviz" name="rviz" args="-d $(find rmtt_orb3)/rmtt_mapping.rviz"/>
+
+</launch>

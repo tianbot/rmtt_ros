@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<launch>
+    <arg name = "drone_name" default="$(optenv RMTT_NAMESPACE /)" />
+    <arg name="drone_ip" default="$(optenv RMTT_DRONE_IP 192.168.10.1)" />
+    <arg name="local_ip" default="$(optenv RMTT_LOCAL_IP)" />
+    <arg name="local_port" default="8890" />
+    <arg name="video_port" default="11111" />
+    <group ns="$(arg drone_name)">
+        <node pkg="rmtt_driver" name="rmtt_driver" type="rmtt_node.py" output="screen">
+            <param name="drone_ip" type="string" value="$(arg drone_ip)" />
+            <param name="drone_port" type="string" value="8889" />
+            <param unless="$(eval local_ip=='')" name="local_ip" type="string" value="$(arg local_ip)" />
+            <param name="local_port" type="string" value="$(arg local_port)" />
+            <param name="video_port" type="string" value="$(arg video_port)" />
+            <param name="enable_camera" type="bool" value="true" />
+        </node>
+    </group>
+</launch>

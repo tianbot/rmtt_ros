@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>rmtt_vrpn_client</name>
+  <version>0.0.0</version>
+  <description>The rmtt_vrpn_client package base on vrpn</description>
+
+  <maintainer email="tianbot@todo.todo">tianbot</maintainer>
+
+  <license>BSD</license>
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>geometry_msgs</depend>
+  <depend>roscpp</depend>
+  <depend>tf2_ros</depend>
+  <depend>vrpn</depend>
+
+  <test_depend>roslaunch</test_depend>
+  <test_depend>roslint</test_depend>
+
+  <export>
+  </export>
+</package>

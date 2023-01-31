@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<launch>
+    <arg name = "drone_name" default="$(optenv RMTT_NAMESPACE /)" />
+    <group ns="$(arg drone_name)">
+        <node pkg="rmtt_teleop" name="rmtt_teleop_key" type="rmtt_teleop_key.py" output="screen">
+            <param name="speed" value="0.2" />
+            <param name="turn" value="0.2" />
+        </node>
+    </group>
+</launch>

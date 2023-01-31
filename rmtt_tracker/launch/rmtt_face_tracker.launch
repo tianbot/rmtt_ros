@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<launch>
+  <arg name = "drone_name" default="$(optenv RMTT_NAMESPACE /)" />
+  <group ns="$(arg drone_name)">
+    <node pkg="rmtt_tracker" type="rmtt_face_tracker.py" name="face_tracker" output="screen" respawn="true">
+      <param name="face_model_path" value="$(find rmtt_tracker)/models/haarcascade_frontalface_default.xml"/>
+    </node>
+  </group>
+</launch> 

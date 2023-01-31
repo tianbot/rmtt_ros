@@ -1,0 +1,56 @@
+<launch>
+
+<!-- ORB_SLAM3 Mono -->
+<node pkg="rmtt_orb3" type="Mono" name="rmtt_orb3" output="screen" cwd="node" args="$(find rmtt_orb3)/Vocabulary/ORBvoc.txt $(find rmtt_orb3)/SettingsFile/Monocular/rmtt_mono.yaml"/> 
+
+<!-- midas depth estimate -->
+    <arg name="image_topic" default="/image_raw"/>
+    <arg name="depth_topic" default="/midas/depth"/>
+    <arg name="model_name" default="model-small-traced.pt"/>
+    <arg name="out_orig_size" default="true"/>
+    <arg name="net_width" default="256"/>
+    <arg name="net_height" default="256"/>
+    <arg name="logging" default="false"/>
+    <arg name="cloud_topic" default="/midas/pointcloud"/>
+    <arg name="frame_id" default="rmtt_camera"/>
+    <arg name="kdevice" default="kCUDA"/>
+    <arg name="camera_cx" default="483.508820"/>
+    <arg name="camera_cy" default="386.970869"/>
+    <arg name="camera_fx" default="943.821400"/>
+    <arg name="camera_fy" default="910.326512"/>
+<node pkg="rmtt_midas" type="rmtt_midas" name="rmtt_midas" output="screen" cwd="node" respawn="true">
+    <param name="image_topic" value="$(arg image_topic)"/>
+    <param name="depth_topic" value="$(arg depth_topic)"/>
+    <param name="model_name" value="$(arg model_name)"/>
+    <param name="out_orig_size" value="$(arg out_orig_size)"/>
+    <param name="net_width" value="$(arg net_width)"/>
+    <param name="net_height" value="$(arg net_height)"/>
+    <param name="logging" value="$(arg logging)"/>
+    <param name="cloud_topic" value="$(arg cloud_topic)"/>
+    <param name="frame_id" value="$(arg frame_id)"/>
+    <param name="kdevice" value="$(arg kdevice)"/>
+    <param name="camera_cx" value="$(arg camera_cx)"/>
+    <param name="camera_cy" value="$(arg camera_cy)"/>
+    <param name="camera_fx" value="$(arg camera_fx)"/>
+    <param name="camera_fy" value="$(arg camera_fy)"/>
+</node>
+
+<!--octomap-->
+    <arg name="resolution" default="0.02"/>
+    <arg name="fixed_frame_id" default="world"/>
+    <arg name="max_range" default="5.0"/>
+    <arg name="cloud_in" default="/midas/pointcloud"/>
+<node pkg="octomap_server" type="octomap_server_node" name="octomap_server">
+    <param name="resolution" value="$(arg resolution)" />
+    <!-- fixed map frame (set to 'map' if SLAM or localization running!) -->
+    <param name="frame_id" type="string" value="$(arg fixed_frame_id)" />
+    <!-- maximum range to integrate (speedup!) -->
+    <param name="sensor_model/max_range" value="$(arg max_range)" />
+    <!-- data source to integrate (PointCloud2) -->
+    <remap from="cloud_in" to="$(arg cloud_in)" />
+</node>
+
+<!--rviz-->
+<node pkg="rviz" type="rviz" name="rviz" args="-d $(find rmtt_orb3)/rmtt_mapping.rviz"/>
+
+</launch>

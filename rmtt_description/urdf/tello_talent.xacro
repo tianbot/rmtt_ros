@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="tello_talent">
+
+    <xacro:property name="prefix" value="$(arg prefix)" />
+
+    <xacro:if value="${prefix == '/' or prefix == '' or prefix == ' '}"> 
+    <xacro:property name="tf_prefix" value="" />
+    </xacro:if>
+
+    <xacro:unless value="${prefix == '/' or prefix == '' or prefix == ' '}"> 
+    <xacro:property name="tf_prefix" value="${prefix}/" />
+    </xacro:unless>
+
+    <!-- Materials -->
+    <material name="gray">
+        <color rgba="0.5 0.5 0.5 1.0"/>
+    </material>
+    <material name="white">
+        <color rgba="0.9 0.9 0.9 1.0"/>
+    </material>
+    <material name="red">
+        <color rgba="1.0 0 0 1.0"/>
+    </material>
+    <!-- TODO add Gazebo color information -->
+
+    <!-- Base link -->
+    <link name="${tf_prefix}base_link">
+        <visual>
+            <origin xyz="0 0 0.01"/>
+            <geometry>
+                <box size="0.07 0.02 0.02"/>
+            </geometry>
+            <material name="white"/>
+        </visual>
+        <visual>
+            <origin xyz="0 0 -0.01"/>
+            <geometry>
+                <box size="0.07 0.02 0.02"/>
+            </geometry>
+            <material name="gray"/>
+        </visual>
+        <visual>
+            <origin xyz="0.05 -0.05 0"/>
+            <geometry>
+                <cylinder length="0.01" radius="0.045"/>
+            </geometry>
+            <material name="gray"/>
+        </visual>
+        <visual>
+            <origin xyz="-0.05 0.05 0"/>
+            <geometry>
+                <cylinder length="0.01" radius="0.045"/>
+            </geometry>
+            <material name="gray"/>
+        </visual>
+        <visual>
+            <origin xyz="-0.05 -0.05 0"/>
+            <geometry>
+                <cylinder length="0.01" radius="0.045"/>
+            </geometry>
+            <material name="gray"/>
+        </visual>
+        <visual>
+            <origin xyz="0.05 0.05 0"/>
+            <geometry>
+                <cylinder length="0.01" radius="0.045"/>
+            </geometry>
+            <material name="gray"/>
+        </visual>
+    </link>
+
+    <!-- Camera link -->
+    <link name="${tf_prefix}camera_link">
+        <visual>
+            <origin xyz="0 0 0"/>
+            <geometry>
+                <sphere radius="0.01"/>
+            </geometry>
+            <material name="red"/>
+        </visual>
+        <collision>
+            <geometry>
+                <sphere radius="0.01"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="1e-5"/>
+            <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+        </inertial>
+    </link>
+
+    <!-- Fixed joint -->
+    <joint name="camera_joint" type="fixed">
+        <origin xyz="0.035 0 0" rpy="${-pi*105/180} 0 ${-pi*90/180}"/>  <!-- TODO fix origin -->
+        <parent link="${tf_prefix}base_link"/>
+        <child link="${tf_prefix}camera_link"/>
+    </joint>
+
+    <!-- IMU Link -->
+    <link name="${tf_prefix}imu_link"/>
+    <joint name="imu_joint" type="fixed">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <parent link="${tf_prefix}base_link"/>
+      <child link="${tf_prefix}imu_link"/>
+    </joint>
+</robot>

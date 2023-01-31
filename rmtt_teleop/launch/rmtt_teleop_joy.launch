@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<launch>
+    <arg name = "drone_name" default="$(optenv RMTT_NAMESPACE /)" />
+    <arg name="joy_dev" default="/dev/input/js0" />
+    <arg name="scale" default="1.0" />
+
+    <group ns="$(arg drone_name)">
+        <node pkg="joy" type="joy_node" name="joystick">
+            <param name="dev" value="$(arg joy_dev)" />
+        </node>
+
+        <node pkg="rmtt_teleop" name="rmtt_teleop_joy" type="rmtt_teleop_joy.py" output="screen">
+            <param name="joy_mode" value="D" />
+            <param name="linear_scale" value="$(arg scale)" type="double"/>
+            <param name="angular_scale" value="$(arg scale)" type="double"/>
+        </node>
+    </group>
+</launch>
